@@ -1,0 +1,32 @@
+# Auto-created at build time.
+
+/blib
+/_build
+/MYMETA.json
+/MYMETA.yml
+/META.json
+/META.yml
+/lib/Archive/Npk.c
+/lib/Archive/Npk.o
+/lib/Archive/Npk.xs
+
+
+# Auto-created at build time.
+# Not removed by clean action.
+
+/Build
+/*.bak
+
+
+# Distributions
+
+/Archive-Npk-*/
+/Archive-Npk-*.tar.gz
+
+
+# Backup files
+
+*~
+\#*#
+*.swp
+

@@ -1,0 +1,4 @@
+Build.PL
+lib/Archive/Npk.pm
+MANIFEST
+Npk.xs
