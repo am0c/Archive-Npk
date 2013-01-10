@@ -88,7 +88,7 @@ my $build = $build_class->new(
         'DynaLoader' => 0,
     },
     xs_files => {
-        'Npk.xs' => 'lib/Archive/Npk.xs',
+        'Npk.xs' => 'lib/Archive/Npk/API.xs',
     },
     needs_compiler => 1,
     dynamic_config => 1,

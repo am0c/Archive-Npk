@@ -1,4 +1,4 @@
-package Archive::Npk;
+package Archive::Npk::API;
 
 #use 5.008001;
 
@@ -35,7 +35,7 @@ BEGIN {
 
 sub dl_load_flags { 0x01 }
 
-bootstrap Archive::Npk;
+bootstrap Archive::Npk::API;
 
 
 
@@ -44,11 +44,11 @@ __END__
 
 =head1 NAME
 
-Archive::Npk - Neat Package System - npk
+Archive::Npk::API - Neat Package System - npk
 
 =head1 SYNOPSIS
 
-  use Archive::Npk;
+  use Archive::Npk::API;
 
 =head1 DESCRIPTION
 

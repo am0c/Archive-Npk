@@ -1,4 +1,5 @@
 Build.PL
 lib/Archive/Npk.pm
+lib/Archive/Npk/API.pm
 MANIFEST
 Npk.xs
