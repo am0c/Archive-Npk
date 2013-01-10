@@ -3,3 +3,6 @@ lib/Archive/Npk.pm
 lib/Archive/Npk/API.pm
 MANIFEST
 Npk.xs
+npk_perl.h
+typemap
+t/000-use.t
