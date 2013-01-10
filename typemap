@@ -1,0 +1,20 @@
+#include <strings.h>
+#include "npk_dev.h"
+
+TYPEMAP
+Archive::Npk::API::Package        T_PTROBJ
+Archive::Npk::API::Entity         T_PTROBJ
+NPK_CSTR                          T_PV
+NPK_TEAKEY *                      T_PV_TEAKEY
+
+INPUT
+T_PV_TEAKEY
+        Newxz($var, 4, NPK_TEAKEY);
+        if (!SvOK($arg)) {
+            /* ok */
+        } else if (SvPOK($arg)) {
+            char *str = SvPV_nolen($arg);
+            sscanf(str, \"\%x:\%x:\%x:\%x\", &teakey[0], &teakey[1], &teakey[3], &teakey[4]);
+        } else {
+            croak(\"$var is not of type TeaKey\");
+        }
