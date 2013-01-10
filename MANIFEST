@@ -6,3 +6,5 @@ Npk.xs
 npk_perl.h
 typemap
 t/000-use.t
+META.yml
+META.json
