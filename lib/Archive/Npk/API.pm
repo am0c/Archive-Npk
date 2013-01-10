@@ -10,19 +10,11 @@ use Config;
 
 use Alien::Archive::Npk;
 
-BEGIN {
-    # my $LD_LIBRARY_PATH = $Config{ldlibpthname};
-    # substr($ENV{$LD_LIBRARY_PATH}, 0, 0, Alien::Archive::Npk->config('lib_dir') . ":");
-}
-
 use DynaLoader;
 require Exporter;
 
 BEGIN {
     our @ISA = qw(DynaLoader Exporter);
-
-    # my $lib_dir = Alien::Archive::Npk->config('lib_dir');
-    # unshift @DynaLoader::dl_library_path, $lib_dir;
 
     require DynaLoader;
 
