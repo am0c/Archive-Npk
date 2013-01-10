@@ -6,5 +6,7 @@ Npk.xs
 npk_perl.h
 typemap
 t/000-use.t
+t/010-api-package.t
+t/res/sample.npk
 META.yml
 META.json
