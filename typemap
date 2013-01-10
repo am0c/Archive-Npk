@@ -14,7 +14,7 @@ T_PV_TEAKEY
             /* ok */
         } else if (SvPOK($arg)) {
             char *str = SvPV_nolen($arg);
-            sscanf(str, \"\%x:\%x:\%x:\%x\", &teakey[0], &teakey[1], &teakey[3], &teakey[4]);
+            sscanf(str, \"\%x:\%x:\%x:\%x\", &teakey[0], &teakey[1], &teakey[2], &teakey[3]);
         } else {
             croak(\"$var is not of type TeaKey\");
         }
