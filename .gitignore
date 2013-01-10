@@ -6,9 +6,9 @@
 /MYMETA.yml
 /META.json
 /META.yml
-/lib/Archive/Npk.c
-/lib/Archive/Npk.o
-/lib/Archive/Npk.xs
+/lib/Archive/Npk/API.c
+/lib/Archive/Npk/API.o
+/lib/Archive/Npk/API.xs
 
 
 # Auto-created at build time.
