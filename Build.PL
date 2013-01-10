@@ -7,7 +7,7 @@ use Module::Build;
 use File::Spec;
 use Alien::Archive::Npk;
 
-my $cflags = "-I" . Alien::Archive::Npk->config('include_dir');
+my @cflags = ("-I" . Alien::Archive::Npk->config('include_dir'), "-I.");
 my @libs = ("-L" . Alien::Archive::Npk->config('lib_dir'), "-lnpk");
 
 my $build_class = Module::Build->subclass(
@@ -92,8 +92,8 @@ my $build = $build_class->new(
     },
     needs_compiler => 1,
     dynamic_config => 1,
-    extra_compiler_flags => $cflags,
-    extra_linker_flags => join " ", @libs,
+    extra_compiler_flags => join(" ", @cflags),
+    extra_linker_flags => join(" ", @libs),
 );
 
 $build->create_build_script;
