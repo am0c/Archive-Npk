@@ -67,10 +67,9 @@ OUTPUT:
 Archive::Npk::API::Entity
 get_first_entity(self, entityname)
     Archive::Npk::API::Package self
-    NPK_CSTR entityname
 CODE:
 {
-    RETVAL = npk_package_get_first_entity(self, entityname);
+    RETVAL = npk_package_get_first_entity(self);
 }
 OUTPUT:
     RETVAL
