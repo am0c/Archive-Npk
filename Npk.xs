@@ -2,6 +2,7 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#include "npk.h"
 #include "npk_dev.h"
 #include "npk_perl.h"
 
@@ -19,6 +20,9 @@ CODE:
 {
     Newx(RETVAL, 1, NPK_PACKAGE);
     RETVAL = npk_package_open(fn, teakey);
+    if (RETVAL == NULL) {
+        npk_perl_croak();
+    }
 }
 OUTPUT:
     RETVAL
@@ -36,6 +40,9 @@ CODE:
 {
     Newx(RETVAL, 1, NPK_PACKAGE);
     RETVAL = npk_package_open_with_fd(name, fd, offset, size, teakey);
+    if (RETVAL == NULL) {
+        npk_perl_croak();
+    }
 }
 OUTPUT:
     RETVAL
@@ -47,6 +54,9 @@ close(self)
 CODE:
 {
     RETVAL = npk_package_close(self);
+    if (!RETVAL) {
+        npk_perl_croak();
+    }
 }
 OUTPUT:
     RETVAL
@@ -59,6 +69,9 @@ get_entity(self, entityname)
 CODE:
 {
     RETVAL = npk_package_get_entity(self, entityname);
+    if (RETVAL == NULL) {
+        npk_perl_croak();
+    }
 }
 OUTPUT:
     RETVAL
@@ -70,6 +83,9 @@ get_first_entity(self, entityname)
 CODE:
 {
     RETVAL = npk_package_get_first_entity(self);
+    if (RETVAL == NULL) {
+        npk_perl_croak();
+    }
 }
 OUTPUT:
     RETVAL
