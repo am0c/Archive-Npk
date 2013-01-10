@@ -18,7 +18,8 @@ BEGIN {
 
     require DynaLoader;
 
-    for (Alien::Archive::Npk->config('libs_path')) {
+    my $libs = Alien::Archive::Npk->config('libs_path');
+    for (@$libs) {
         DynaLoader::dl_load_file($_) or croak DynaLoader::dl_error();
     }
 
