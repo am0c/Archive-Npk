@@ -5,8 +5,8 @@
 #include "npk_dev.h"
 #include "npk_perl.h"
 
-typedef NPK_PACKAGE  *Archive__Npk__API__Package;
-typedef NPK_ENTITY   *Archive__Npk__API__Entity;
+typedef NPK_PACKAGE  Archive__Npk__API__Package;
+typedef NPK_ENTITY   Archive__Npk__API__Entity;
 
 MODULE = Archive::Npk::API       PACKAGE = Archive::Npk::API::Package
 
@@ -18,7 +18,7 @@ open(class, fn, teakey)
 CODE:
 {
     Newx(RETVAL, 1, NPK_PACKAGE);
-    *RETVAL = npk_package_open(fn, teakey);
+    RETVAL = npk_package_open(fn, teakey);
 }
 OUTPUT:
     RETVAL
@@ -35,7 +35,7 @@ open_with_fd(class, name, fd, offset, size, teakey)
 CODE:
 {
     Newx(RETVAL, 1, NPK_PACKAGE);
-    *RETVAL = npk_package_open_with_fd(name, fd, offset, size, teakey);
+    RETVAL = npk_package_open_with_fd(name, fd, offset, size, teakey);
 }
 OUTPUT:
     RETVAL
