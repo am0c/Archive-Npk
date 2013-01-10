@@ -3,6 +3,6 @@
 
 #include "npk.h"
 
-#define npk_perl_croak()  croak(npk_error_to_str(g_npkError))
+#define npk_perl_croak()  croak("%s", npk_error_to_str(g_npkError))
 
 #endif  /* ifndef NPK_PERL_H */
