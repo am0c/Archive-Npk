@@ -73,6 +73,7 @@ sub fdecl_parse {
             while (!look(value => ')')) {
                 my $type;
                 if ($type = look(type => 'ident')) {
+                    $type = match();
                     if (look(type => 'ident_idx')) {
                         my $var = match();
                         $type .= ' *';
@@ -84,6 +85,7 @@ sub fdecl_parse {
                     }
                 }
                 elsif ($type = look(type => 'ident_ptr')) {
+                    $type = match();
                     push @args, [ match(type => 'ident') ];
                 }
                 else {
