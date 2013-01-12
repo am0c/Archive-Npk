@@ -91,7 +91,16 @@ sub fdecl_parse {
                 else {
                     push @args, match(value => '...');
                 }
-                match(value => ',');
+            }
+            continue {
+                if (look(value => ',')) {
+                    match();
+                }
+                elsif (!look(value => ')')) {
+                    print "current paramenter = ";
+                    dd @args;
+                    error("End of argument list expected but got '$token[0][1]'");
+                }
             }
             \@args;
         },
