@@ -55,7 +55,7 @@ sub fdecl_parse {
         return shift @token if @_ == 0;
 
         my $look = look(@_);
-        return shift @token if defined look(@_);
+        return shift @token if $look;
 
         error("$_[0] of '$_[1]' expected while parsing $cur_parse but get '$token[0][1]' near ",
           map { $_->[1] } @token);
