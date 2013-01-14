@@ -46,8 +46,14 @@ sub fdecl_parse {
             ($idx, $value) = ('value', $idx);
         }
 
-        return $token[0]
-          if $token[0][$idx eq 'value' ? 1 : 0] eq $value;
+        my $value_orig = $token[0][$idx eq 'value' ? 1 : 0];
+
+        if (ref $value eq 'Regexp') {
+            return $token[0] if $value_orig =~ /$value/;
+        }
+        else {
+            return $token[0] if $value_orig eq $value;
+        }
     };
     local *match = sub {
         error("end of string at trying $cur_parse") unless @token;
@@ -70,29 +76,20 @@ sub fdecl_parse {
         open_paren => '(',
         parameter => sub {
             my @args;
+            my @arg;
+
+          PARM:
             while (!look(value => ')')) {
-                my $type;
-                if ($type = look(type => 'ident')) {
-                    $type = match();
-                    if (look(type => 'ident_idx')) {
-                        my $var = match();
-                        $type .= ' *';
-                        $var =~ s/\[\d+\]$//;
-                        push @args, [ $type, $var ];
-                    }
-                    elsif (look(type => 'ident')) {
-                        push @args, [ $type, match() ];
-                    }
+                @arg = ();
+                while (look(type => qr/^ident/)) {
+                    push @arg, match();
                 }
-                elsif ($type = look(type => 'ident_ptr')) {
-                    $type = match();
-                    push @args, [ match(type => 'ident') ];
-                }
-                else {
-                    push @args, match(value => '...');
+                if (!@arg) {
+                    push @arg, match(value => '...');
                 }
             }
             continue {
+                push @args, [ @arg ];
                 if (look(value => ',')) {
                     match();
                 }
