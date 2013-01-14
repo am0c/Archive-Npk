@@ -172,7 +172,14 @@ sub fdecl_parse {
         }
     }
 
-    \@ret;
+    my %ret;
+    for my $node (@ret) {
+        my $name = $node->[0];
+        $ret{$name} = $node;
+        $ret{as_array} = \@ret;
+    }
+
+    \%ret;
 }
 
 sub fdecl_tokenize {
