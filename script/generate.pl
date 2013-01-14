@@ -9,22 +9,54 @@ use Carp;
 use File::Spec;
 use List::Util qw(first);
 
-use Alien::Archive::Npk;
-use C::Scan;
 use Data::Dump qw(dd);
+use Getopt::Long::Descriptive;
 
 
-my $incl = Alien::Archive::Npk->config('include_dir');
-my $scan = C::Scan->new(
-    filename    => File::Spec->catfile($incl, "npk_dev.h"),
-    includeDirs => [ $incl ],
+my ($option, $usage) = describe_options(
+    'generate.pl %o',
+    [ 'action' => hidden => { one_of => [
+      [ 'dump',    "dump the parsed function declarations" ],
+    ]}],
+    [],
+    [ 'verbose|v', "print more stuffs" ],
+    [ 'help',      "print this usage and exit" ],
+    {
+      'getopt_conf' => [qw{
+         auto_version
+         auto_help
+      }]
+    },
 );
 
-my $fdecls = $scan->get('fdecls');
-for (@$fdecls) {
-    say $_;
-    dd fdecl_parse( fdecl_tokenize( $_ ) );
+if ($option->help || !$option->action) {
+    print $usage;
+    exit 0;
+} elsif (my $action = $option->action) {
+    eval "action_$action()";
 }
+
+
+sub action_dump {
+    my $scanner = process_scanner();
+    my $fdecls = $scanner->get('fdecls');
+    for (@$fdecls) {
+        say $_;
+        dd fdecl_parse( fdecl_tokenize( $_ ) );
+    }
+}
+
+
+sub process_scanner {
+    require Alien::Archive::Npk;
+    require C::Scan;
+    my $incl = Alien::Archive::Npk->config('include_dir');
+    my $scan = C::Scan->new(
+        filename    => File::Spec->catfile($incl, "npk_dev.h"),
+        includeDirs => [ $incl ],
+    );
+}
+
 
 sub fdecl_parse {
     my @token = @{+shift};
