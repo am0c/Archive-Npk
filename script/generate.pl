@@ -36,6 +36,7 @@ if ($option->help || !$option->action) {
 } elsif (my $action = $option->action) {
     $action =~ y/-/_/;
     eval "action_$action()";
+    croak $@ if $@;
 }
 
 
