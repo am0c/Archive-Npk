@@ -16,7 +16,8 @@ use Getopt::Long::Descriptive;
 my ($option, $usage) = describe_options(
     'generate.pl %o',
     [ 'action' => hidden => { one_of => [
-      [ 'dump',    "dump the parsed function declarations" ],
+      [ 'dump-parse|dp', "dump parse tree of functions" ],
+      [ 'dump-list|dl',  "dump scanned function prototypes" ],
     ]}],
     [],
     [ 'verbose|v', "print more stuffs" ],
@@ -33,17 +34,21 @@ if ($option->help || !$option->action) {
     print $usage;
     exit 0;
 } elsif (my $action = $option->action) {
+    $action =~ y/-/_/;
     eval "action_$action()";
 }
 
 
-sub action_dump {
-    my $scanner = process_scanner();
-    my $fdecls = $scanner->get('fdecls');
-    for (@$fdecls) {
+sub action_dump_parse {
+    my $func = process_fdecls();
+    for (@$func) {
         say $_;
         dd fdecl_parse( fdecl_tokenize( $_ ) );
     }
+}
+
+sub action_dump_list {
+    say for @{ process_fdecls() };
 }
 
 
@@ -55,6 +60,12 @@ sub process_scanner {
         filename    => File::Spec->catfile($incl, "npk_dev.h"),
         includeDirs => [ $incl ],
     );
+}
+
+sub process_fdecls {
+    my $scanner = process_scanner();
+    my $fdecls = $scanner->get('fdecls');
+    $fdecls;
 }
 
 
