@@ -22,7 +22,7 @@ Archive::Npk::API::Package
 CODE:
 {
     Newx(RETVAL, 1, NPK_PACKAGE);
-    RETVAL = <: $func.function_name[1][1] :>(<: $func.argument_list_as_string :>);
+    RETVAL = <: $func.function_name.token_value :>(<: $func.argument_list_as_string :>);
     if (RETVAL == NULL) {
         npk_perl_croak();
     }
