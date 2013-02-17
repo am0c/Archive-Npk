@@ -64,13 +64,13 @@ sub action_generate {
         my @args;
 
         for my $arg (@parm) {
-            my $arg_str = join " ", map { $_->[1] } @$arg;
+            my $arg_str = join " ", map { $_->{value} } @$arg;
             push @args, $arg_str;
         }
 
         s/(\w+)\[\d+\]$/*$1/ for @args;
         $parse->{parameter_list_as_string} = join ", ", @args;
-        $parse->{argument_list_as_string} = join ", ", map { $_->[1][1] } @parm;
+        $parse->{argument_list_as_string} = join ", ", map { $_->[1]{value} } @parm;
 
         push @parse, $parse;
     }
@@ -106,7 +106,7 @@ sub process_xs {
         my ($rule, $candidate) = @$map;
         my @ruled_parse = @$parse;
         @ruled_parse = grep {
-            if ($_->{function_name}[-1][-1] =~ /$rule/) {
+            if ($_->{function_name}[1]{value} =~ /$rule/) {
                 $_->{function_mapped_name} = $1;
             }
         } @ruled_parse;
@@ -141,7 +141,7 @@ sub fdecl_parse {
             ($idx, $value) = ('value', $idx);
         }
 
-        my $value_orig = $token[0][$idx eq 'value' ? 1 : 0];
+        my $value_orig = $token[0]{$idx eq 'value' ? 'value' : 'token_type'};
 
         if (ref $value eq 'Regexp') {
             return $token[0] if $value_orig =~ /$value/;
@@ -158,8 +158,8 @@ sub fdecl_parse {
         my $look = look(@_);
         return shift @token if $look;
 
-        error("$_[0] of '$_[1]' expected while parsing $cur_parse but get '$token[0][1]' near ",
-          map { $_->[1] } @token);
+        error("$_[0] of '$_[1]' expected while parsing $cur_parse but get '$token[0]{value}' near ",
+          map { $_->{value} } @token);
     };
     local *commit = sub {
         push @ret, [ $cur_parse => shift ];
@@ -191,7 +191,7 @@ sub fdecl_parse {
                 elsif (!look(value => ')')) {
                     print "current paramenter = ";
                     dd @args;
-                    error("End of argument list expected but got '$token[0][1]'");
+                    error("End of argument list expected but got '$token[0]{value}'");
                 }
             }
             \@args;
@@ -212,7 +212,7 @@ sub fdecl_parse {
                 $found = match() if look(type => $_);
                 last TYPE if $found;
             }
-            error("type of ", join(" or ", @$rule), " expected but got $token[0][0]") unless $found;
+            error("type of ", join(" or ", @$rule), " expected but got $token[0]{token_type}") unless $found;
 
             commit( $found );
         }
@@ -255,7 +255,7 @@ sub fdecl_tokenize {
     }{
         my ($idx) = keys %+;
         die "Parse error near $+{error}" if exists $+{error};
-        push @token, [ $idx => $& ] if $idx;
+        push @token, +{ token_type => $idx, value => $& } if $idx;
 
         \('-'); # hi
     }xsge;
