@@ -70,7 +70,7 @@ sub action_generate {
 
         s/(\w+)\[\d+\]$/*$1/ for @args;
         $parse->{parameter_list_as_string} = join ", ", @args;
-        $parse->{argument_list_as_string} = join ", ", map { $_->[1]{value} } @parm;
+        $parse->{argument_list_as_string} = join ", ", map { $_->[-1]{value} } @parm;
 
         push @parse, $parse;
     }
