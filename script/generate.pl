@@ -178,7 +178,7 @@ sub fdecl_parse {
                 }
             }
             continue {
-                push @args, [ @arg ];
+                push @args, bless [ @arg ], "Archive::Npk::fdecl_arg";
                 if (look(value => ',')) {
                     match();
                 }
@@ -276,7 +276,7 @@ sub fdecl_tokenize {
     }{
         my ($idx) = keys %+;
         die "Parse error near $+{error}" if exists $+{error};
-        push @token, +{ token_type => $idx, value => $& } if $idx;
+        push @token, bless +{ token_type => $idx, value => $& }, "Archive::Npk::fdecl_token" if $idx;
         1;
     }xsge;
 
