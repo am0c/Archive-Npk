@@ -228,7 +228,6 @@ sub fdecl_parse {
     my @parm_list_xs;
 
     my @var_list;
-    my @var_list_xs;
 
     for my $parm (@{$ret{parameter}}) {
         my @ident = @$parm;
@@ -236,13 +235,12 @@ sub fdecl_parse {
         my $var_name = $parm->[-1]{value};
 
         push @parm_list, $parm_str;
+
+        $var_name =~ s/\[\s*\d+\s*\]$//;
         push @var_list, $var_name;
 
         $parm_str =~ s/(\w+)\s*\[\s*\d+\s*\]$/*$1/;
         push @parm_list_xs, $parm_str;
-
-        $var_name =~ s/\[\s*\d+\s*\]$//;
-        push @var_list_xs, $var_name;
     }
 
     return {
@@ -251,7 +249,6 @@ sub fdecl_parse {
         parm_list    => \@parm_list,
         parm_list_xs => \@parm_list_xs,
         var_list     => \@var_list,
-        var_list_xs  => \@var_list_xs,
     };
 }
 

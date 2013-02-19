@@ -15,7 +15,7 @@ MODULE = Archive::Npk::API       PACKAGE = Archive::Npk::API::Package
 
 Archive::Npk::API::Package
 <: $func.mapped_name :>(class<:
-    $func.var_list_xs ? ", " ~ join(", ", $func.var_list_xs) : ""
+    $func.var_list ? ", " ~ join(", ", $func.var_list) : ""
 :>)
     char *class
 :  for $func.parm_list_xs -> $parm {
@@ -24,7 +24,7 @@ Archive::Npk::API::Package
 CODE:
 {
     Newx(RETVAL, 1, NPK_PACKAGE);
-    RETVAL = <: $func.name :>(<: join(", ", $func.var_list_xs) :>);
+    RETVAL = <: $func.name :>(<: join(", ", $func.var_list) :>);
     if (RETVAL == NULL) {
         npk_perl_croak();
     }
