@@ -71,16 +71,21 @@ sub process_scanner {
     require Alien::Archive::Npk;
     require C::Scan;
     my $incl = Alien::Archive::Npk->config('include_dir');
-    my $scan = C::Scan->new(
-        filename    => File::Spec->catfile($incl, "npk_dev.h"),
-        includeDirs => [ $incl ],
-    );
+    my @scan = map {
+        C::Scan->new(
+            filename    => File::Spec->catfile($incl, $_),
+            includeDirs => [ $incl ],
+        );
+    } "npk.h", "npk_dev.h";
 }
 
 sub process_fdecls {
-    my $scanner = process_scanner();
-    my $fdecls = $scanner->get('fdecls');
-    $fdecls;
+    my @scanner = process_scanner();
+    my @fdecls;
+
+    push @fdecls, @{ $_->get('fdecls') } for @scanner;
+
+    \@fdecls;
 }
 
 sub process_xs {

@@ -11,6 +11,92 @@ MODULE = Archive::Npk::API       PACKAGE = Archive::Npk::API::Package
 
 
 Archive::Npk::API::Package
+open(class, filename, teakey)
+    char *class
+    NPK_CSTR filename
+    NPK_TEAKEY *teakey
+CODE:
+{
+    Newx(RETVAL, 1, NPK_PACKAGE);
+    RETVAL = npk_package_open(filename, teakey);
+    if (RETVAL == NULL) {
+        npk_perl_croak();
+    }
+}
+OUTPUT:
+    RETVAL
+
+
+Archive::Npk::API::Package
+open_with_fd(class, name, fd, offset, size, teakey)
+    char *class
+    NPK_CSTR name
+    int fd
+    long offset
+    long size
+    NPK_TEAKEY *teakey
+CODE:
+{
+    Newx(RETVAL, 1, NPK_PACKAGE);
+    RETVAL = npk_package_open_with_fd(name, fd, offset, size, teakey);
+    if (RETVAL == NULL) {
+        npk_perl_croak();
+    }
+}
+OUTPUT:
+    RETVAL
+
+
+Archive::Npk::API::Package
+close(class, package)
+    char *class
+    NPK_PACKAGE package
+CODE:
+{
+    Newx(RETVAL, 1, NPK_PACKAGE);
+    RETVAL = npk_package_close(package);
+    if (RETVAL == NULL) {
+        npk_perl_croak();
+    }
+}
+OUTPUT:
+    RETVAL
+
+
+Archive::Npk::API::Package
+get_entity(class, package, entityname)
+    char *class
+    NPK_PACKAGE package
+    NPK_CSTR entityname
+CODE:
+{
+    Newx(RETVAL, 1, NPK_PACKAGE);
+    RETVAL = npk_package_get_entity(package, entityname);
+    if (RETVAL == NULL) {
+        npk_perl_croak();
+    }
+}
+OUTPUT:
+    RETVAL
+
+
+Archive::Npk::API::Package
+get_first_entity(class, package)
+    char *class
+    NPK_PACKAGE package
+CODE:
+{
+    Newx(RETVAL, 1, NPK_PACKAGE);
+    RETVAL = npk_package_get_first_entity(package);
+    if (RETVAL == NULL) {
+        npk_perl_croak();
+    }
+}
+OUTPUT:
+    RETVAL
+
+
+Archive::Npk::API::Package
 alloc(class, lpPackage, teakey)
     char *class
     NPK_PACKAGE* lpPackage
