@@ -55,23 +55,11 @@ sub action_dump_list {
 }
 
 sub action_generate {
-    my @func = @{ process_fdecls() };
+    my $func = process_fdecls();
     my @parse;
 
-    for (@func) {
+    for (@$func) {
         my $parse = fdecl_parse( fdecl_tokenize( $_ ) );
-        my @parm = @{$parse->{parameter}[1]};
-        my @args;
-
-        for my $arg (@parm) {
-            my $arg_str = join " ", map { $_->{value} } @$arg;
-            push @args, $arg_str;
-        }
-
-        s/(\w+)\[\d+\]$/*$1/ for @args;
-        $parse->{parameter_list_as_string} = join ", ", @args;
-        $parse->{argument_list_as_string} = join ", ", map { $_->[1]{value} } @parm;
-
         push @parse, $parse;
     }
 
@@ -100,23 +88,29 @@ sub process_xs {
     my $tmpl_map = eval read_file(File::Spec->catfile('template', 'mapping.pl'));
 
     require Text::Xslate;
-    my $xslate = Text::Xslate->new;
+    my $xslate = Text::Xslate->new(
+        function => {
+            join => sub {
+                my ($punc, $list) = @_;
+                defined $list ? join($punc, @$list) : "";
+            },
+        },
+    );
 
     for my $map (@$tmpl_map) {
         my ($rule, $candidate) = @$map;
         my @ruled_parse = @$parse;
         @ruled_parse = grep {
-            if ($_->{function_name}[1]{value} =~ /$rule/) {
-                $_->{function_mapped_name} = $1;
+            if ($_->{name} =~ /$rule/) {
+                $_->{mapped_name} = $1;
             }
         } @ruled_parse;
 
         open my $fh, ">", File::Spec->catfile('xs', $candidate) or die;
         print STDERR "Generating xs/$candidate from template/$candidate\n";
-        print $fh $xslate->render(
-            File::Spec->catfile('template', $candidate),
-            { scaned => \@ruled_parse },
-        );
+        print $fh $xslate->render(File::Spec->catfile('template', $candidate), {
+            scaned => \@ruled_parse,
+        });
     }
 }
 
@@ -228,10 +222,37 @@ sub fdecl_parse {
     for my $node (@ret) {
         my $name = $node->{parse_state};
         $ret{$name} = $node->{node};
-        $ret{as_array} = \@ret;
     }
 
-    \%ret;
+    my @parm_list;
+    my @parm_list_xs;
+
+    my @var_list;
+    my @var_list_xs;
+
+    for my $parm (@{$ret{parameter}}) {
+        my @ident = @$parm;
+        my $parm_str = join " ", map $_->{value}, @ident;
+        my $var_name = $parm->[-1]{value};
+
+        push @parm_list, $parm_str;
+        push @var_list, $var_name;
+
+        $parm_str =~ s/(\w+)\s*\[\s*\d+\s*\]$/*$1/;
+        push @parm_list_xs, $parm_str;
+
+        $var_name =~ s/\[\s*\d+\s*\]$//;
+        push @var_list_xs, $var_name;
+    }
+
+    return {
+        return       => $ret{return_type}{value},
+        name         => $ret{function_name}{value},
+        parm_list    => \@parm_list,
+        parm_list_xs => \@parm_list_xs,
+        var_list     => \@var_list,
+        var_list_xs  => \@var_list_xs,
+    };
 }
 
 sub fdecl_tokenize {
