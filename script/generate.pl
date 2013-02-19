@@ -256,8 +256,7 @@ sub fdecl_tokenize {
         my ($idx) = keys %+;
         die "Parse error near $+{error}" if exists $+{error};
         push @token, +{ token_type => $idx, value => $& } if $idx;
-
-        \('-'); # hi
+        1;
     }xsge;
 
     return \@token;
