@@ -97,6 +97,9 @@ sub process_xs {
         },
     );
 
+    my $header = read_file(File::Spec->catfile('template', 'header.xs'));
+    write_file('Npk.xs', $header);
+
     for my $map (@$tmpl_map) {
         my ($rule, $candidate) = @$map;
         my @ruled_parse = @$parse;
@@ -108,9 +111,12 @@ sub process_xs {
 
         open my $fh, ">", File::Spec->catfile('xs', $candidate) or die;
         print STDERR "Generating xs/$candidate from template/$candidate\n";
-        print $fh $xslate->render(File::Spec->catfile('template', $candidate), {
+        my $xs = $xslate->render(File::Spec->catfile('template', $candidate), {
             scaned => \@ruled_parse,
         });
+        print $fh $xs;
+
+        append_file('Npk.xs', $xs);
     }
 }
 
