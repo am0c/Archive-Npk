@@ -60,17 +60,17 @@ sub action_generate {
 
     for (@func) {
         my $parse = fdecl_parse( fdecl_tokenize( $_ ) );
-        my @parm = @{$parse->{parameter}[1]};
+        my $parm = $parse->{parameter};
         my @args;
 
-        for my $arg (@parm) {
+        for my $arg (@$parm) {
             my $arg_str = join " ", map { $_->{value} } @$arg;
             push @args, $arg_str;
         }
 
         s/(\w+)\[\d+\]$/*$1/ for @args;
         $parse->{parameter_list_as_string} = join ", ", @args;
-        $parse->{argument_list_as_string} = join ", ", map { $_->[-1]{value} } @parm;
+        $parse->{argument_list_as_string} = join ", ", map { $_->[-1]{value} } @$parm;
 
         push @parse, $parse;
     }
@@ -106,7 +106,7 @@ sub process_xs {
         my ($rule, $candidate) = @$map;
         my @ruled_parse = @$parse;
         @ruled_parse = grep {
-            if ($_->{function_name}[1]{value} =~ /$rule/) {
+            if ($_->{function_name}{value} =~ /$rule/) {
                 $_->{function_mapped_name} = $1;
             }
         } @ruled_parse;
@@ -227,7 +227,7 @@ sub fdecl_parse {
     my %ret;
     for my $node (@ret) {
         my $name = $node->[0];
-        $ret{$name} = $node;
+        $ret{$name} = $node->[1];
         $ret{as_array} = \@ret;
     }
 
