@@ -14,15 +14,17 @@ MODULE = Archive::Npk::API       PACKAGE = Archive::Npk::API::Package
 : for $scaned -> $func {
 
 Archive::Npk::API::Package
-<: $func.function_mapped_name :>(class, <: $func.parameter_list_as_string :>)
+<: $func.mapped_name :>(class<:
+    $func.var_list ? ", " ~ join(", ", $func.var_list) : ""
+:>)
     char *class
-:  for $func.parameter_as_string -> $parm {
+:  for $func.parm_list_xs -> $parm {
     <: $parm :>
 : }
 CODE:
 {
     Newx(RETVAL, 1, NPK_PACKAGE);
-    RETVAL = <: $func.function_name.token_value :>(<: $func.argument_list_as_string :>);
+    RETVAL = <: $func.name :>(<: join(", ", $func.var_list) :>);
     if (RETVAL == NULL) {
         npk_perl_croak();
     }
